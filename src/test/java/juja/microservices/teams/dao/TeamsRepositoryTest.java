@@ -38,23 +38,4 @@ public class TeamsRepositoryTest {
     final String uuidFour = "f827811f-51e8-4fc4-a56d-aebcd2193bc0";
     final Team team = new Team(keeper, uuidOne, uuidTwo, uuidThree, uuidFour);
 
-    @Test
-    public void save(){
-        //When
-        doNothing().when(mongoTemplate).save(any(Team.class));
-        //Then
-        assertEquals(null, teamRepository.add(team));
-    }
-
-    @Test
-    public void isUserInOtherTeam(){
-        //Given
-        List<Team> teamList = new ArrayList<Team>();
-        teamList.add(team);
-        //When
-        when(mongoTemplate.find(anyObject(), eq(Team.class))).thenReturn(teamList);
-        //Then
-        assertTrue(teamRepository.isUserInOtherTeam(uuidOne));
-
-    }
 }
