@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import ua.com.juja.microservices.Utils;
+import ua.com.juja.microservices.teams.dao.feign.KeeperClient;
 import ua.com.juja.microservices.teams.entity.Team;
 import ua.com.juja.microservices.teams.entity.impl.ActivateTeamRequest;
 import ua.com.juja.microservices.teams.entity.impl.DeactivateTeamRequest;
@@ -67,6 +68,9 @@ public class TeamControllerTest {
 
     @MockBean
     private TeamService teamService;
+
+    @MockBean
+    private KeeperClient keeperClient;
 
     @Test
     public void activateTeamIfSomeUsersInActiveTeams() throws Exception {
