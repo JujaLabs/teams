@@ -100,6 +100,7 @@ dependencies {
     testCompile 'io.rest-assured:rest-assured:3.0.2'
     testCompile 'net.javacrumbs.json-unit:json-unit-fluent:1.19.0'
     testCompile 'org.skyscreamer:jsonassert:1.4.0'
+    testCompile group: 'org.assertj', name: 'assertj-core', version: '3.8.0'
 }
 
 task wrapper(type: Wrapper) {
