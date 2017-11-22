@@ -45,7 +45,7 @@ tasks.withType(JavaCompile) {
 import org.gradle.internal.os.OperatingSystem
 
 task buildDocker(type: Docker, dependsOn: build) {
-    if(OperatingSystem.current().isLinux()){
+    if (OperatingSystem.current().isLinux()) {
         dockerBinary = "sudo docker"
     }
     applicationName = jar.baseName
@@ -65,11 +65,17 @@ test.testLogging {
 }
 
 test {
-    filter{
+    filter {
         includeTestsMatching "ua.com.juja.microservices.teams.*"
     }
     afterTest { desc, result ->
         println "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Dalston.SR3'
     }
 }
 
@@ -85,6 +91,8 @@ dependencies {
     compile 'org.projectlombok:lombok:1.16.10'
     compile 'io.springfox:springfox-swagger2:2.6.1'
     compile 'io.springfox:springfox-swagger-ui:2.6.1'
+    compile 'org.springframework.cloud:spring-cloud-starter-eureka-server'
+    compile 'org.springframework.cloud:spring-cloud-starter-feign'
 
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'com.github.fakemongo:fongo:2.0.10'
