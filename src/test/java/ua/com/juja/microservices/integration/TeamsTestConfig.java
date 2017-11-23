@@ -1,4 +1,4 @@
-package juja.microservices.integration;
+package ua.com.juja.microservices.integration;
 
 import com.github.fakemongo.Fongo;
 import com.mongodb.Mongo;

@@ -1,0 +1,9 @@
+{
+  "from":"uuid-from",
+  "members": [
+    "uuid1",
+    "uuid-in-one-team",
+    "uuid2",
+    "uuid-in-several-teams"
+  ]
+}

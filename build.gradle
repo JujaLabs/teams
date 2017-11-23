@@ -8,29 +8,36 @@ buildscript {
     }
 }
 
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
 
-group = 'ua.com.juja'
-version = '1.0-SNAPSHOT'
+group = 'juja'
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
 
 jar {
-    baseName = "teams-service"
+    baseName = "teams"
     version = "0.1.0"
 }
 
-description = "teams-services"
+description = "teams"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
-}
-
-repositories {
-    mavenCentral()
-    mavenLocal()
 }
 
 test.testLogging {
@@ -41,12 +48,13 @@ test.testLogging {
 
 test {
     filter{
-        includeTestsMatching "juja.microservices.teams-service.*"
+        includeTestsMatching "ua.com.juja.microservices.teams.*"
     }
     afterTest { desc, result ->
         println "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
     }
 }
+
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web") {
         exclude module: 'spring-boot-starter-tomcat'

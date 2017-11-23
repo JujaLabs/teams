@@ -1,0 +1,9 @@
+{
+  "from":"uuid-from",
+  "members": [
+    "uuid400",
+    "uuid100",
+    "uuid200",
+    "uuid300"
+  ]
+}
