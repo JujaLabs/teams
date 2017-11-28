@@ -11,11 +11,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 import ua.com.juja.microservices.Utils;
+import ua.com.juja.microservices.teams.dao.feign.KeeperClient;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -49,6 +51,9 @@ public class TeamsAcceptanceTest extends BaseAcceptanceTest {
 
     @Inject
     private RestTemplate restTemplate;
+
+    @MockBean
+    private KeeperClient keeperClient;
 
     private MockRestServiceServer mockServer;
 
