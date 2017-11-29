@@ -28,6 +28,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 /**
  * @author Ivan Shapovalov
+ * @author Vladimir Zadorozhniy
  */
 @RunWith(SpringRunner.class)
 public class TeamsAcceptanceTest extends BaseAcceptanceTest {

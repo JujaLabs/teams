@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+/**
+ * @author Vladimir Zadorozhniy
+ */
 @FeignClient(name = "gateway")
 public interface KeepersClient {
     @RequestMapping(method = RequestMethod.GET, value = "/v1/keepers/{uuid}", consumes =

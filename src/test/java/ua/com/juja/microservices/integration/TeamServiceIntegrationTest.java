@@ -47,6 +47,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 /**
  * @author Ivan Shapovalov
  * @author Andrii Sidun
+ * @author Vladimir Zadorozhniy
  */
 @RunWith(SpringRunner.class)
 public class TeamServiceIntegrationTest extends BaseIntegrationTest {

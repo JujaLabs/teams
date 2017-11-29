@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * @author Ivan Shapovalov
+ * @author Vladimir Zadorozhniy
  */
 @Repository
 @Profile({"production", "default"})

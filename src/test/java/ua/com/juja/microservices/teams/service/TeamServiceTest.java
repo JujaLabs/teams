@@ -42,6 +42,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Ivan Shapovalov
  * @author Andrii Sidun
+ * @author Vladimir Zadorozhniy
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(TeamService.class)

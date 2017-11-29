@@ -50,6 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author Andrii Sidun
  * @author Ivan Shapovalov
+ * @author Vladimir Zadorozhniy
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(TeamController.class)
