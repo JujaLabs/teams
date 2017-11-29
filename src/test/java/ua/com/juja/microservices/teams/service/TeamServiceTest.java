@@ -63,8 +63,7 @@ public class TeamServiceTest {
     @MockBean
     private KeepersClient keepersClient;
 
-    @Value("${keepers.direction.teams}")
-    private String teamsDirection;
+    private final String teamsDirection = "teams";
 
     @Test
     public void activateTeamIfUserNotInAnotherTeamsExecutedCorrectly() {

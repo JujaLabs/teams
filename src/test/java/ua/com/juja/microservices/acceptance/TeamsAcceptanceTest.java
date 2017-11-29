@@ -31,19 +31,13 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
  */
 @RunWith(SpringRunner.class)
 public class TeamsAcceptanceTest extends BaseAcceptanceTest {
-    @Value("${teams.endpoint.activateTeam}")
-    private String teamsActivateTeamUrl;
-    @Value("${teams.endpoint.deactivateTeam}")
-    private String teamsDeactivateTeamUrl;
-    @Value("${teams.endpoint.getTeam}")
-    private String teamsGetTeamUrl;
-    @Value("${teams.endpoint.getAllTeams}")
-    private String teamsGetAllTeamsUrl;
+    private final String teamsActivateTeamUrl = "/v1/teams";
+    private final String teamsDeactivateTeamUrl = "/v1/teams";
+    private final String teamsGetTeamUrl = "/v1/teams/users";
+    private final String teamsGetAllTeamsUrl = "/v1/teams";
 
-    @Value("${keepers.endpoint.getDirections}")
-    private String keepersGetDirectionsUrl;
-    @Value("${keepers.direction.teams}")
-    private String teamsDirection;
+    private final String keepersGetDirectionsUrl = "/v1/keepers";
+    private final String teamsDirection = "teams";
 
     @Inject
     private RestTemplate restTemplate;

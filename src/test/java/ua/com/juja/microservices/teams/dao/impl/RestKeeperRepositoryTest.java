@@ -39,13 +39,6 @@ public class RestKeeperRepositoryTest {
     @MockBean
     private KeepersClient keepersClient;
 
-    @Value("${keepers.endpoint.getDirections}")
-    private String keepersGetDirectionsUrl;
-
-    @Value("${keepers.direction.teams}")
-    private String teamsDirection;
-
-
     @Test
     public void getDirectionsExecutedCorrectly() {
         String uuid = "uuid";

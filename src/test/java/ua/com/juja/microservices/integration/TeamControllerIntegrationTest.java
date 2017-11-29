@@ -41,18 +41,13 @@ import static org.mockito.Mockito.when;
 public class TeamControllerIntegrationTest extends BaseIntegrationTest {
     @Rule
     public final ExpectedException expectedException = ExpectedException.none();
-    @Value("${teams.endpoint.activateTeam}")
-    private String teamsActivateTeamUrl;
-    @Value("${teams.endpoint.deactivateTeam}")
-    private String teamsDeactivateTeamUrl;
-    @Value("${teams.endpoint.getAllTeams}")
-    private String teamsGetAllTeamsUrl;
+    private final String teamsActivateTeamUrl = "/v1/teams";
+    private final String teamsDeactivateTeamUrl = "/v1/teams";
+    private final String teamsGetAllTeamsUrl = "/v1/teams";
 
-    @Value("${keepers.endpoint.getDirections}")
-    private String keepersGetDirectionsUrl;
+    private final String teamsDirection = "teams";
 
-    @Value("${keepers.direction.teams}")
-    private String teamsDirection;
+
 
     @Inject
     private RestTemplate restTemplate;

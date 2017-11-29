@@ -54,14 +54,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @WebMvcTest(TeamController.class)
 public class TeamControllerTest {
-    @Value("${teams.endpoint.activateTeam}")
-    private String teamsActivateTeamUrl;
-    @Value("${teams.endpoint.deactivateTeam}")
-    private String teamsDeactivateTeamUrl;
-    @Value("${teams.endpoint.getTeam}")
-    private String teamsGetTeamUrl;
-    @Value("${teams.endpoint.getAllTeams}")
-    private String teamsGetAllTeamsUrl;
+    private final String teamsActivateTeamUrl = "/v1/teams";
+    private final String teamsDeactivateTeamUrl = "/v1/teams";
+    private final String teamsGetTeamUrl = "/v1/teams/users";
+    private final String teamsGetAllTeamsUrl = "/v1/teams";
 
     @Inject
     private MockMvc mockMvc;

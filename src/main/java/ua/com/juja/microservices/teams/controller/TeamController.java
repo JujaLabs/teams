@@ -28,7 +28,7 @@ public class TeamController {
     @Inject
     private TeamService teamService;
 
-    @PostMapping(value = "${teams.endpoint.activateTeam}", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/v1/teams", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> activateTeam(@Valid @RequestBody ActivateTeamRequest request) {
         log.debug("Received 'Activate team' request {}", request);
         Team team = teamService.activateTeam(request);
@@ -37,7 +37,7 @@ public class TeamController {
         return ResponseEntity.ok(team);
     }
 
-    @PutMapping(value = "${teams.endpoint.deactivateTeam}", consumes = "application/json", produces = "application/json")
+    @PutMapping(value = "/v1/teams", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> deactivateTeam(@Valid @RequestBody DeactivateTeamRequest request) {
         log.debug("Received 'Deactivate team' request '{}'", request);
         Team team = teamService.deactivateTeam(request);
@@ -46,7 +46,7 @@ public class TeamController {
         return ResponseEntity.ok(team);
     }
 
-    @GetMapping(value = "${teams.endpoint.getAllTeams}", produces = "application/json")
+    @GetMapping(value = "/v1/teams", produces = "application/json")
     public ResponseEntity<?> getAllActiveTeams() {
         log.debug("Received 'Get all teams' request");
         List<Team> teams = teamService.getAllActiveTeams();
@@ -55,7 +55,7 @@ public class TeamController {
         return ResponseEntity.ok(teams);
     }
 
-    @GetMapping(value = "${teams.endpoint.getTeam}" + "/{uuid}", produces = "application/json")
+    @GetMapping(value = "/v1/teams/users" + "/{uuid}", produces = "application/json")
     public ResponseEntity<?> getTeamByUuid(@PathVariable String uuid) {
         log.debug("Received 'Get team' request. Get team of user {}", uuid);
         Team team = teamService.getUserActiveTeam(uuid);

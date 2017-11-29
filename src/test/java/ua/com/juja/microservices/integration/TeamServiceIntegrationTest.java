@@ -53,6 +53,8 @@ public class TeamServiceIntegrationTest extends BaseIntegrationTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
+    private final String teamsDirection = "teams";
+
     @Inject
     private TeamRepository teamRepository;
 
@@ -61,12 +63,6 @@ public class TeamServiceIntegrationTest extends BaseIntegrationTest {
 
     @MockBean
     private KeepersClient keepersClient;
-
-    @Value("${keepers.endpoint.getDirections}")
-    private String keepersGetDirectionsUrl;
-
-    @Value("${keepers.direction.teams}")
-    private String teamsDirection;
 
     @Inject
     private RestTemplate restTemplate;
