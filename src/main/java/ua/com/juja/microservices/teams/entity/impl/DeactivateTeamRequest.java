@@ -21,7 +21,7 @@ public class DeactivateTeamRequest implements TeamRequest {
     @JsonProperty("uuid")
     private final String uuid;
 
-    public DeactivateTeamRequest(@JsonProperty("from") String from,@JsonProperty("uuid")  String uuid) {
+    public DeactivateTeamRequest(@JsonProperty("from") String from, @JsonProperty("uuid") String uuid) {
         this.from = from;
         this.uuid = uuid;
     }

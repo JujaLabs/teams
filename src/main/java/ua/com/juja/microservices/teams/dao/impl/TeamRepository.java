@@ -31,9 +31,9 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwi
 @Repository
 @Slf4j
 public class TeamRepository {
-
     @Value("${spring.data.mongodb.collection}")
     private String mongoCollectionName;
+
     @Inject
     private MongoTemplate mongoTemplate;
 
@@ -67,7 +67,6 @@ public class TeamRepository {
         log.debug("Finished 'checkUsersActiveTeams '{}' teams' from DB at date '{}'. Users in active teams <{}>",
                 members.toArray(), actualDate, users.toArray());
         return users;
-
     }
 
     public List<Team> getAllActiveTeams(Date actualDate) {
@@ -76,7 +75,6 @@ public class TeamRepository {
                 .and("activateDate").lte(actualDate)), Team.class, mongoCollectionName);
         log.debug("Finished 'Get all active teams' from DB at date '{}'. Teams <{}>", actualDate, teams);
         return teams;
-
     }
 
     public Team saveTeam(Team team) {

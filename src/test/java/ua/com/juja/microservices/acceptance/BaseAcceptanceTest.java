@@ -22,10 +22,10 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 public class BaseAcceptanceTest {
 
     @LocalServerPort
-    int localPort;
-    private String mongoDbName = "teams";
-    private String mongoDbHost = "127.0.0.1";
-    private int mongoDbPort = 27017;
+    private int localPort;
+    private final String mongoDbName = "teams";
+    private final String mongoDbHost = "127.0.0.1";
+    private final int mongoDbPort = 27017;
     @Rule
     public MongoDbRule mongoDbRule = new MongoDbRule(
             mongoDb()

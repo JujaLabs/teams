@@ -5,13 +5,10 @@ import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import io.restassured.response.Response;
 import net.javacrumbs.jsonunit.core.Option;
 import org.eclipse.jetty.http.HttpMethod;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 import ua.com.juja.microservices.Utils;
 import ua.com.juja.microservices.teams.dao.feign.KeepersClient;
@@ -23,8 +20,6 @@ import java.util.Collections;
 import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 /**
  * @author Ivan Shapovalov
@@ -36,8 +31,6 @@ public class TeamsAcceptanceTest extends BaseAcceptanceTest {
     private final String teamsDeactivateTeamUrl = "/v1/teams";
     private final String teamsGetTeamUrl = "/v1/teams/users";
     private final String teamsGetAllTeamsUrl = "/v1/teams";
-
-    private final String keepersGetDirectionsUrl = "/v1/keepers";
     private final String teamsDirection = "teams";
 
     @Inject
@@ -45,14 +38,6 @@ public class TeamsAcceptanceTest extends BaseAcceptanceTest {
 
     @MockBean
     private KeepersClient keepersClient;
-
-    private MockRestServiceServer mockServer;
-
-    @Before
-    public void setup() {
-        super.setup();
-        mockServer = MockRestServiceServer.bindTo(restTemplate).build();
-    }
 
     @UsingDataSet(locations = "/datasets/activateTeamIfUserNotInActiveTeam.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @Test

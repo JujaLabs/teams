@@ -4,15 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import net.javacrumbs.jsonunit.core.Option;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 import ua.com.juja.microservices.teams.dao.feign.KeepersClient;
 import ua.com.juja.microservices.teams.dao.impl.TeamRepository;
@@ -41,8 +38,6 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 /**
  * @author Ivan Shapovalov
@@ -67,13 +62,6 @@ public class TeamServiceIntegrationTest extends BaseIntegrationTest {
 
     @Inject
     private RestTemplate restTemplate;
-
-    private MockRestServiceServer mockServer;
-
-    @Before
-    public void setup() {
-        mockServer = MockRestServiceServer.bindTo(restTemplate).build();
-    }
 
     @Test
     @UsingDataSet(locations = "/datasets/activateTeamIfUsersInAnotherActiveTeam.json",
@@ -119,7 +107,6 @@ public class TeamServiceIntegrationTest extends BaseIntegrationTest {
 
         teamService.activateTeam(activateTeamRequest);
     }
-
 
     @Test
     @UsingDataSet(locations = "/datasets/getAndDeactivateDataSet.json")

@@ -31,7 +31,6 @@ public class Teams {
 
     @Bean
     public FilterRegistrationBean corsFilter() {
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
