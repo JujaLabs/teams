@@ -21,11 +21,13 @@ import ua.com.juja.microservices.teams.dao.feign.KeeperClient;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -66,11 +68,10 @@ public class TeamsAcceptanceTest extends BaseAcceptanceTest {
     @UsingDataSet(locations = "/datasets/activateTeamIfUserNotInActiveTeam.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @Test
     public void activateTeamIfUserNotInActiveTeamExecutedCorrectly() throws IOException {
-        mockSuccessKeepersServiceReturnsDirections(
-                keepersGetDirectionsUrl + "/uuid-from",
-                Collections.singletonList(teamsDirection));
         String jsonContentRequest = Utils.convertToString(resource
                 ("acceptance/request/requestActivateTeamIfUserNotInActiveTeamExecutedCorrecly.json"));
+        when(keeperClient.getDirections("uuid-from"))
+                .thenReturn(Collections.singletonList(teamsDirection));
         Response actualResponse = getRealResponse(teamsActivateTeamUrl, jsonContentRequest, HttpMethod.POST);
         String result = actualResponse.asString();
         String jsonContentExpectedResponse = Utils.convertToString(
@@ -86,14 +87,12 @@ public class TeamsAcceptanceTest extends BaseAcceptanceTest {
     @UsingDataSet(locations = "/datasets/activateTeamIfUsersInAnotherActiveTeam.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @Test
     public void activateTeamIfUserInAnotherActiveTeamExecutedCorrectly() throws IOException {
-        mockSuccessKeepersServiceReturnsDirections(
-                keepersGetDirectionsUrl + "/uuid-from",
-                Collections.singletonList(teamsDirection));
         String jsonContentRequest = Utils
                 .convertToString(resource("acceptance/request/requestActivateTeamIfUsersInActiveTeamThrowsExceptions.json"));
         String jsonContentControlResponse = Utils.convertToString(
                 resource("acceptance/response/responseActivateTeamIfUserInActiveTeamThrowsException.json"));
-
+        when(keeperClient.getDirections("uuid-from"))
+                .thenReturn(Collections.singletonList(teamsDirection));
         Response actualResponse = getRealResponse(teamsActivateTeamUrl, jsonContentRequest, HttpMethod.POST);
 
         String result = actualResponse.asString();
@@ -105,11 +104,10 @@ public class TeamsAcceptanceTest extends BaseAcceptanceTest {
     @UsingDataSet(locations = "/datasets/getAndDeactivateDataSet.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @Test
     public void deactivateTeamIfUserInTeamExecutedCorrectly() throws IOException {
-        mockSuccessKeepersServiceReturnsDirections(
-                keepersGetDirectionsUrl + "/uuid-from",
-                Collections.singletonList(teamsDirection));
         String jsonContentRequest = Utils.convertToString(resource
                 ("acceptance/request/requestDeactivateTeamIfUserInTeamExecutedCorrectly.json"));
+        when(keeperClient.getDirections("uuid-from"))
+                .thenReturn(Collections.singletonList(teamsDirection));
         Response actualResponse = getRealResponse(teamsDeactivateTeamUrl, jsonContentRequest, HttpMethod.PUT);
 
         String result = actualResponse.asString();
@@ -126,14 +124,12 @@ public class TeamsAcceptanceTest extends BaseAcceptanceTest {
     @UsingDataSet(locations = "/datasets/getAndDeactivateDataSet.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @Test
     public void deactivateTeamIfUserNotInTeamThrowsException() throws IOException {
-        mockSuccessKeepersServiceReturnsDirections(
-                keepersGetDirectionsUrl + "/uuid-from",
-                Collections.singletonList(teamsDirection));
         String jsonContentRequest = Utils.convertToString(resource
                 ("acceptance/request/requestDeactivateTeamIfUserNotInTeamThrowsException.json"));
         String jsonContentExpectedResponse = Utils.convertToString(
                 resource("acceptance/response/responseGetDeactivateTeamIfUserNotInTeamThrowsExeption.json"));
-
+        when(keeperClient.getDirections("uuid-from"))
+                .thenReturn(Collections.singletonList(teamsDirection));
         Response actualResponse = getRealResponse(teamsDeactivateTeamUrl, jsonContentRequest, HttpMethod.PUT);
 
         printConsoleReport(teamsDeactivateTeamUrl, jsonContentExpectedResponse, actualResponse.body());
@@ -146,13 +142,12 @@ public class TeamsAcceptanceTest extends BaseAcceptanceTest {
     @UsingDataSet(locations = "/datasets/getAndDeactivateDataSet.json", loadStrategy = LoadStrategyEnum.CLEAN_INSERT)
     @Test
     public void deactivateTeamIfUserInSeveralTeamsThrowsException() throws IOException {
-        mockSuccessKeepersServiceReturnsDirections(
-                keepersGetDirectionsUrl + "/uuid-from",
-                Collections.singletonList(teamsDirection));
         String jsonContentRequest = Utils.convertToString(resource
                 ("acceptance/request/requestDeactivateTeamIfUserInSeveralTeamsException.json"));
         String jsonContentExpectedResponse = Utils.convertToString(
                 resource("acceptance/response/responseGetDeactivateTeamIfUserInSeveralTeamsThrowsExceptions.json"));
+        when(keeperClient.getDirections("uuid-from"))
+                .thenReturn(Collections.singletonList(teamsDirection));
         Response actualResponse = getRealResponse(teamsDeactivateTeamUrl, jsonContentRequest, HttpMethod.PUT);
 
         printConsoleReport(teamsDeactivateTeamUrl, jsonContentExpectedResponse, actualResponse.body());
@@ -229,13 +224,5 @@ public class TeamsAcceptanceTest extends BaseAcceptanceTest {
         assertThatJson(result).when(Option.IGNORING_ARRAY_ORDER)
                 .when(Option.IGNORING_EXTRA_FIELDS)
                 .isEqualTo(jsonContentExpectedResponse);
-    }
-
-    private void mockSuccessKeepersServiceReturnsDirections(String expectedURI,
-                                                            List<String> directions) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        mockServer.expect(requestTo(expectedURI))
-                .andExpect(method(org.springframework.http.HttpMethod.GET))
-                .andRespond(withSuccess(mapper.writeValueAsString(directions), MediaType.APPLICATION_JSON_UTF8));
     }
 }
