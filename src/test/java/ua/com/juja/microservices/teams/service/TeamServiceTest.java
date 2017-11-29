@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-import ua.com.juja.microservices.teams.dao.feign.KeeperClient;
+import ua.com.juja.microservices.teams.dao.feign.KeepersClient;
 import ua.com.juja.microservices.teams.dao.impl.TeamRepository;
 import ua.com.juja.microservices.teams.entity.Team;
 import ua.com.juja.microservices.teams.entity.impl.ActivateTeamRequest;
@@ -61,7 +61,7 @@ public class TeamServiceTest {
     private KeeperService keeperService;
 
     @MockBean
-    private KeeperClient keeperClient;
+    private KeepersClient keepersClient;
 
     @Value("${keepers.direction.teams}")
     private String teamsDirection;

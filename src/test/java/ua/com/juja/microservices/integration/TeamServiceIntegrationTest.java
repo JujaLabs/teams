@@ -1,7 +1,6 @@
 package ua.com.juja.microservices.integration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import net.javacrumbs.jsonunit.core.Option;
@@ -12,12 +11,10 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
-import ua.com.juja.microservices.teams.dao.feign.KeeperClient;
+import ua.com.juja.microservices.teams.dao.feign.KeepersClient;
 import ua.com.juja.microservices.teams.dao.impl.TeamRepository;
 import ua.com.juja.microservices.teams.entity.Team;
 import ua.com.juja.microservices.teams.entity.impl.ActivateTeamRequest;
@@ -44,7 +41,6 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
@@ -64,7 +60,7 @@ public class TeamServiceIntegrationTest extends BaseIntegrationTest {
     private TeamService teamService;
 
     @MockBean
-    private KeeperClient keeperClient;
+    private KeepersClient keepersClient;
 
     @Value("${keepers.endpoint.getDirections}")
     private String keepersGetDirectionsUrl;
@@ -103,7 +99,7 @@ public class TeamServiceIntegrationTest extends BaseIntegrationTest {
         ActivateTeamRequest activateTeamRequest = new ActivateTeamRequest(from,
                 new HashSet<>(Arrays.asList("new-uuid", "uuid100", "uuid200", "uuid300")));
         Team expected = new Team(from, activateTeamRequest.getMembers());
-        when(keeperClient.getDirections(from))
+        when(keepersClient.getDirections(from))
                 .thenReturn(Collections.singletonList(teamsDirection));
         Team actual = teamService.activateTeam(activateTeamRequest);
 
@@ -119,7 +115,7 @@ public class TeamServiceIntegrationTest extends BaseIntegrationTest {
         String uuid = "uuid-in-team";
         ActivateTeamRequest activateTeamRequest = new ActivateTeamRequest(from, new HashSet<>(Arrays.asList(uuid,
                 "uuid100", "uuid200", "uuid300")));
-        when(keeperClient.getDirections(from))
+        when(keepersClient.getDirections(from))
                 .thenReturn(Collections.singletonList(teamsDirection));
         expectedException.expect(UserAlreadyInTeamException.class);
         expectedException.expectMessage(String.format("User(s) '#%s#' exist(s) in another teams", uuid));
@@ -176,7 +172,7 @@ public class TeamServiceIntegrationTest extends BaseIntegrationTest {
         String from = "uuid-from";
         String uuid = "uuid-in-one-team";
         DeactivateTeamRequest deactivateTeamRequest = new DeactivateTeamRequest(from, uuid);
-        when(keeperClient.getDirections(from))
+        when(keepersClient.getDirections(from))
                 .thenReturn(new ArrayList<>());
         expectedException.expect(UserNotTeamsKeeperException.class);
         expectedException.expectMessage("User '#uuid-from#' have not permissions for that command");
@@ -191,7 +187,7 @@ public class TeamServiceIntegrationTest extends BaseIntegrationTest {
         String from = "uuid-from";
         String uuid = "uuid-in-one-team";
         DeactivateTeamRequest deactivateTeamRequest = new DeactivateTeamRequest(from, uuid);
-        when(keeperClient.getDirections(from))
+        when(keepersClient.getDirections(from))
                 .thenReturn(Collections.singletonList(teamsDirection));
         List<Team> teamsBefore = teamRepository.getUserActiveTeams(uuid, actualDate);
         assertEquals(1, teamsBefore.size());

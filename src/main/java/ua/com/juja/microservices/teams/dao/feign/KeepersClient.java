@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @FeignClient(name = "gateway")
-public interface KeeperClient {
+public interface KeepersClient {
     @RequestMapping(method = RequestMethod.GET, value = "/v1/keepers/{uuid}", consumes =
             MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     List<String> getDirections(@RequestParam(value = "uuid") String uuid);

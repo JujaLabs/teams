@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import ua.com.juja.microservices.teams.dao.KeeperRepository;
-import ua.com.juja.microservices.teams.dao.feign.KeeperClient;
+import ua.com.juja.microservices.teams.dao.feign.KeepersClient;
 import ua.com.juja.microservices.teams.exceptions.ApiErrorMessage;
 import ua.com.juja.microservices.teams.exceptions.KeeperExchangeException;
 import ua.com.juja.microservices.teams.utils.Utils;
@@ -23,14 +23,14 @@ public class RestKeeperRepository implements KeeperRepository {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Inject
-    private KeeperClient keeperClient;
+    private KeepersClient keepersClient;
 
     @Override
     public List<String> getDirections(String uuid) {
         List<String> directions;
         logger.debug("Send request to keepers repository");
         try {
-            directions = keeperClient.getDirections(uuid);
+            directions = keepersClient.getDirections(uuid);
         } catch (FeignException ex) {
             ApiErrorMessage error = Utils.convertToApiError(ex.getMessage());
             logger.warn("Keepers service returned error: [{}]", ex.getMessage());

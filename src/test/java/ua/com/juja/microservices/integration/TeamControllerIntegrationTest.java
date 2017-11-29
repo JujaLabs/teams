@@ -1,36 +1,28 @@
 package ua.com.juja.microservices.integration;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.RestTemplate;
 import ua.com.juja.microservices.Utils;
-import ua.com.juja.microservices.teams.dao.feign.KeeperClient;
+import ua.com.juja.microservices.teams.dao.feign.KeepersClient;
 
 import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
 import static org.mockito.Mockito.mock;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -66,7 +58,7 @@ public class TeamControllerIntegrationTest extends BaseIntegrationTest {
     private RestTemplate restTemplate;
 
     @MockBean
-    private KeeperClient keeperClient;
+    private KeepersClient keepersClient;
 
     @Inject
     private MockMvc mockMvc;
@@ -83,7 +75,7 @@ public class TeamControllerIntegrationTest extends BaseIntegrationTest {
     public void activateTeamIfUserNotInActiveTeamExecutedCorrectly() throws Exception {
         String jsonContentRequest = Utils.convertToString((resource
                 ("acceptance/request/requestActivateTeamIfUserNotInActiveTeamExecutedCorrecly.json")));
-        when(keeperClient.getDirections("uuid-from"))
+        when(keepersClient.getDirections("uuid-from"))
                 .thenReturn(Collections.singletonList(teamsDirection));
         mockMvc.perform(post(teamsActivateTeamUrl)
                 .contentType(APPLICATION_JSON_UTF8)
@@ -97,7 +89,7 @@ public class TeamControllerIntegrationTest extends BaseIntegrationTest {
     public void activateTeamIfUserInActiveTeamExecutedCorrectly() throws Exception {
         String jsonContentRequest = Utils.convertToString((resource
                 ("acceptance/request/requestActivateTeamIfUsersInActiveTeamThrowsExceptions.json")));
-        when(keeperClient.getDirections("uuid-from"))
+        when(keepersClient.getDirections("uuid-from"))
                 .thenReturn(Collections.singletonList(teamsDirection));
         mockMvc.perform(post(teamsActivateTeamUrl)
                 .contentType(APPLICATION_JSON_UTF8)
@@ -111,7 +103,7 @@ public class TeamControllerIntegrationTest extends BaseIntegrationTest {
     public void deactivateTeamIfUserInTeamExecutedCorrectly() throws Exception {
         String jsonContentRequest = Utils.convertToString((resource
                 ("acceptance/request/requestDeactivateTeamIfUserInTeamExecutedCorrectly.json")));
-        when(keeperClient.getDirections("uuid-from"))
+        when(keepersClient.getDirections("uuid-from"))
                 .thenReturn(Collections.singletonList(teamsDirection));
         mockMvc.perform(put(teamsDeactivateTeamUrl)
                 .contentType(APPLICATION_JSON_UTF8)
@@ -125,7 +117,7 @@ public class TeamControllerIntegrationTest extends BaseIntegrationTest {
     public void deactivateTeamIfUserNotInTeamExecutedCorrectly() throws Exception {
         String jsonContentRequest = Utils.convertToString((resource
                 ("acceptance/request/requestDeactivateTeamIfUserNotInTeamThrowsException.json")));
-        when(keeperClient.getDirections("uuid-from"))
+        when(keepersClient.getDirections("uuid-from"))
                 .thenReturn(Collections.singletonList(teamsDirection));
         mockMvc.perform(put(teamsDeactivateTeamUrl)
                 .contentType(APPLICATION_JSON_UTF8)
@@ -139,7 +131,7 @@ public class TeamControllerIntegrationTest extends BaseIntegrationTest {
     public void deactivateTeamIfUserInSeveralTeamsExecutedCorrectly() throws Exception {
         String jsonContentRequest = Utils.convertToString((resource
                 ("acceptance/request/requestDeactivateTeamIfUserInSeveralTeamsException.json")));
-        when(keeperClient.getDirections("uuid-from"))
+        when(keepersClient.getDirections("uuid-from"))
                 .thenReturn(Collections.singletonList(teamsDirection));
         mockMvc.perform(put(teamsDeactivateTeamUrl)
                 .contentType(APPLICATION_JSON_UTF8)
