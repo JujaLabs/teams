@@ -6,10 +6,10 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import ua.com.juja.microservices.teams.dao.feign.KeepersClient;
 import ua.com.juja.microservices.teams.dao.impl.TeamRepository;
 import ua.com.juja.microservices.teams.entity.Team;
 import ua.com.juja.microservices.teams.entity.impl.ActivateTeamRequest;
@@ -41,6 +41,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Ivan Shapovalov
  * @author Andrii Sidun
+ * @author Vladimir Zadorozhniy
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(TeamService.class)
@@ -48,6 +49,8 @@ public class TeamServiceTest {
 
     @Rule
     final public ExpectedException expectedException = ExpectedException.none();
+
+    private final String teamsDirection = "teams";
 
     @InjectMocks
     @Inject
@@ -59,8 +62,8 @@ public class TeamServiceTest {
     @MockBean
     private KeeperService keeperService;
 
-    @Value("${keepers.direction.teams}")
-    private String teamsDirection;
+    @MockBean
+    private KeepersClient keepersClient;
 
     @Test
     public void activateTeamIfUserNotInAnotherTeamsExecutedCorrectly() {
@@ -149,7 +152,6 @@ public class TeamServiceTest {
 
     @Test
     public void deactivateTeamIfRequestIsNullThrowsException() {
-        String from = "uuid-from";
         final String uuid = "uuid-in-several-teams";
         DeactivateTeamRequest deactivateTeamRequest = new DeactivateTeamRequest(null, uuid);
         expectedException.expect(IllegalArgumentException.class);
@@ -241,7 +243,7 @@ public class TeamServiceTest {
         String from = "uuid-from";
         final String uuid = "uuid-in-team";
         DeactivateTeamRequest deactivateTeamRequest = new DeactivateTeamRequest(from, uuid);
-        final Team team = new Team(from,new HashSet<>(Arrays.asList(uuid, "", "", "")));
+        final Team team = new Team(from, new HashSet<>(Arrays.asList(uuid, "", "", "")));
         List<Team> teams = new ArrayList<>();
         teams.add(team);
         when(keeperService.getDirections(from)).thenReturn(Collections.singletonList(teamsDirection));
@@ -258,9 +260,9 @@ public class TeamServiceTest {
 
     @Test
     public void getAllTeamsExecutedCorrectly() {
-        String from="uuid-from";
-        final Team team1 = new Team(from,new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
-        final Team team2 = new Team(from,new HashSet<>(Arrays.asList("uuid5", "uuid6", "uuid7", "uuid8")));
+        String from = "uuid-from";
+        final Team team1 = new Team(from, new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
+        final Team team2 = new Team(from, new HashSet<>(Arrays.asList("uuid5", "uuid6", "uuid7", "uuid8")));
         final List<Team> expected = Arrays.asList(team1, team2);
 
         when(teamRepository.getAllActiveTeams(any(Date.class))).thenReturn(expected);

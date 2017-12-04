@@ -1,21 +1,16 @@
 package ua.com.juja.microservices.integration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lordofthejars.nosqlunit.annotation.UsingDataSet;
 import com.lordofthejars.nosqlunit.core.LoadStrategyEnum;
 import net.javacrumbs.jsonunit.core.Option;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.web.client.RestTemplate;
+import ua.com.juja.microservices.teams.dao.feign.KeepersClient;
 import ua.com.juja.microservices.teams.dao.impl.TeamRepository;
 import ua.com.juja.microservices.teams.entity.Team;
 import ua.com.juja.microservices.teams.entity.impl.ActivateTeamRequest;
@@ -41,18 +36,19 @@ import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Ivan Shapovalov
  * @author Andrii Sidun
+ * @author Vladimir Zadorozhniy
  */
 @RunWith(SpringRunner.class)
 public class TeamServiceIntegrationTest extends BaseIntegrationTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
+
+    private final String teamsDirection = "teams";
 
     @Inject
     private TeamRepository teamRepository;
@@ -60,21 +56,8 @@ public class TeamServiceIntegrationTest extends BaseIntegrationTest {
     @Inject
     private TeamService teamService;
 
-    @Value("${keepers.endpoint.getDirections}")
-    private String keepersGetDirectionsUrl;
-
-    @Value("${keepers.direction.teams}")
-    private String teamsDirection;
-
-    @Inject
-    private RestTemplate restTemplate;
-
-    private MockRestServiceServer mockServer;
-
-    @Before
-    public void setup() {
-        mockServer = MockRestServiceServer.bindTo(restTemplate).build();
-    }
+    @MockBean
+    private KeepersClient keepersClient;
 
     @Test
     @UsingDataSet(locations = "/datasets/activateTeamIfUsersInAnotherActiveTeam.json",
@@ -97,8 +80,8 @@ public class TeamServiceIntegrationTest extends BaseIntegrationTest {
         ActivateTeamRequest activateTeamRequest = new ActivateTeamRequest(from,
                 new HashSet<>(Arrays.asList("new-uuid", "uuid100", "uuid200", "uuid300")));
         Team expected = new Team(from, activateTeamRequest.getMembers());
-        mockSuccessKeepersServiceReturnsDirections(keepersGetDirectionsUrl + "/" + from,
-                Collections.singletonList(teamsDirection));
+        when(keepersClient.getDirections(from))
+                .thenReturn(Collections.singletonList(teamsDirection));
         Team actual = teamService.activateTeam(activateTeamRequest);
 
         expected.setId(actual.getId());
@@ -113,15 +96,13 @@ public class TeamServiceIntegrationTest extends BaseIntegrationTest {
         String uuid = "uuid-in-team";
         ActivateTeamRequest activateTeamRequest = new ActivateTeamRequest(from, new HashSet<>(Arrays.asList(uuid,
                 "uuid100", "uuid200", "uuid300")));
-        mockSuccessKeepersServiceReturnsDirections(keepersGetDirectionsUrl + "/" + from,
-                Collections.singletonList(teamsDirection));
-
+        when(keepersClient.getDirections(from))
+                .thenReturn(Collections.singletonList(teamsDirection));
         expectedException.expect(UserAlreadyInTeamException.class);
         expectedException.expectMessage(String.format("User(s) '#%s#' exist(s) in another teams", uuid));
 
         teamService.activateTeam(activateTeamRequest);
     }
-
 
     @Test
     @UsingDataSet(locations = "/datasets/getAndDeactivateDataSet.json")
@@ -171,9 +152,8 @@ public class TeamServiceIntegrationTest extends BaseIntegrationTest {
         String from = "uuid-from";
         String uuid = "uuid-in-one-team";
         DeactivateTeamRequest deactivateTeamRequest = new DeactivateTeamRequest(from, uuid);
-        mockSuccessKeepersServiceReturnsDirections(keepersGetDirectionsUrl + "/" + from,
-                new ArrayList<>());
-
+        when(keepersClient.getDirections(from))
+                .thenReturn(new ArrayList<>());
         expectedException.expect(UserNotTeamsKeeperException.class);
         expectedException.expectMessage("User '#uuid-from#' have not permissions for that command");
 
@@ -187,9 +167,8 @@ public class TeamServiceIntegrationTest extends BaseIntegrationTest {
         String from = "uuid-from";
         String uuid = "uuid-in-one-team";
         DeactivateTeamRequest deactivateTeamRequest = new DeactivateTeamRequest(from, uuid);
-        mockSuccessKeepersServiceReturnsDirections(keepersGetDirectionsUrl + "/" + from,
-                Collections.singletonList(teamsDirection));
-
+        when(keepersClient.getDirections(from))
+                .thenReturn(Collections.singletonList(teamsDirection));
         List<Team> teamsBefore = teamRepository.getUserActiveTeams(uuid, actualDate);
         assertEquals(1, teamsBefore.size());
 
@@ -215,13 +194,5 @@ public class TeamServiceIntegrationTest extends BaseIntegrationTest {
         for (int i = 0; i < actual.size(); i++) {
             assertThat(actual.get(i).getMembers(), is(expected.get(i).getMembers()));
         }
-    }
-
-    private void mockSuccessKeepersServiceReturnsDirections(String expectedURI,
-                                                            List<String> directions) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        mockServer.expect(requestTo(expectedURI))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(withSuccess(mapper.writeValueAsString(directions), MediaType.APPLICATION_JSON_UTF8));
     }
 }
