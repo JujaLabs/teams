@@ -2,7 +2,7 @@ package ua.com.juja.microservices.teams.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.com.juja.microservices.teams.dao.KeeperRepository;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
  * @author Vladimir Zadorozhniy
  */
 @RunWith(SpringRunner.class)
-@WebMvcTest(KeeperService.class)
+@SpringBootTest
 public class KeeperServiceTest {
     @Inject
     private KeeperService keeperService;

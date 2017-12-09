@@ -6,7 +6,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.com.juja.microservices.teams.dao.feign.KeepersClient;
@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
  * @author Vladimir Zadorozhniy
  */
 @RunWith(SpringRunner.class)
-@WebMvcTest(TeamService.class)
+@SpringBootTest
 public class TeamServiceTest {
 
     @Rule
