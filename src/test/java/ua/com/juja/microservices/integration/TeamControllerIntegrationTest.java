@@ -6,6 +6,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -40,7 +41,8 @@ public class TeamControllerIntegrationTest extends BaseIntegrationTest {
     private final String teamsActivateTeamUrl = "/v1/teams";
     private final String teamsDeactivateTeamUrl = "/v1/teams";
     private final String teamsGetAllTeamsUrl = "/v1/teams";
-    private final String teamsDirection = "teams";
+    @Value("${keepers.direction.teams}")
+    private String teamsDirection;
 
     @MockBean
     private KeepersClient keepersClient;

@@ -7,6 +7,7 @@ import net.javacrumbs.jsonunit.core.Option;
 import org.eclipse.jetty.http.HttpMethod;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.com.juja.microservices.Utils;
@@ -29,7 +30,8 @@ public class TeamsAcceptanceTest extends BaseAcceptanceTest {
     private final String teamsDeactivateTeamUrl = "/v1/teams";
     private final String teamsGetTeamUrl = "/v1/teams/users";
     private final String teamsGetAllTeamsUrl = "/v1/teams";
-    private final String teamsDirection = "teams";
+    @Value("${keepers.direction.teams}")
+    private String teamsDirection;
 
     @MockBean
     private KeepersClient keepersClient;

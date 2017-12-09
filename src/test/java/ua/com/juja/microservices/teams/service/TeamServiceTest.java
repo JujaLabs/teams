@@ -6,6 +6,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -50,7 +51,8 @@ public class TeamServiceTest {
     @Rule
     final public ExpectedException expectedException = ExpectedException.none();
 
-    private final String teamsDirection = "teams";
+    @Value("${keepers.direction.teams}")
+    private String teamsDirection;
 
     @InjectMocks
     @Inject

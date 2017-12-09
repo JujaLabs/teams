@@ -8,6 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.com.juja.microservices.teams.dao.feign.KeepersClient;
@@ -48,7 +49,8 @@ public class TeamServiceIntegrationTest extends BaseIntegrationTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
-    private final String teamsDirection = "teams";
+    @Value("${keepers.direction.teams}")
+    private String teamsDirection;
 
     @Inject
     private TeamRepository teamRepository;

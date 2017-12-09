@@ -1,6 +1,7 @@
 package ua.com.juja.microservices.teams.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ua.com.juja.microservices.teams.dao.impl.TeamRepository;
 import ua.com.juja.microservices.teams.entity.Team;
@@ -28,7 +29,9 @@ import java.util.stream.Collectors;
 public class TeamService {
 
     private static final int TEAM_SIZE = 4;
-    private final String teamsDirection = "teams";
+
+    @Value("${keepers.direction.teams}")
+    private String teamsDirection;
 
     @Inject
     private KeeperService keeperService;
