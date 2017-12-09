@@ -42,22 +42,6 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-import org.gradle.internal.os.OperatingSystem
-
-task buildDocker(type: Docker, dependsOn: build) {
-    if (OperatingSystem.current().isLinux()) {
-        dockerBinary = "sudo docker"
-    }
-    applicationName = jar.baseName
-    dockerfile = file('docker/Dockerfile')
-    doFirst {
-        copy {
-            from jar
-            into "${stageDir}/target"
-        }
-    }
-}
-
 test.testLogging {
     events "skipped", "failed"
     exceptionFormat "SHORT"
