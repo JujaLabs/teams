@@ -30,14 +30,14 @@ public class TeamService {
 
     private static final int TEAM_SIZE = 4;
 
+    @Value("${keepers.direction.teams}")
+    private String teamsDirection;
+
     @Inject
     private KeeperService keeperService;
 
     @Inject
     private TeamRepository teamRepository;
-
-    @Value("${keepers.direction.teams}")
-    private String teamsDirection;
 
     public Team activateTeam(ActivateTeamRequest activateTeamRequest) {
         if (activateTeamRequest == null || activateTeamRequest.getMembers().size() != TEAM_SIZE) {

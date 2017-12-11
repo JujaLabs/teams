@@ -5,13 +5,13 @@ import org.eclipse.jetty.http.HttpMethod;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import ua.com.juja.microservices.Utils;
+import ua.com.juja.microservices.teams.dao.feign.KeepersClient;
 import ua.com.juja.microservices.teams.entity.Team;
 import ua.com.juja.microservices.teams.entity.impl.ActivateTeamRequest;
 import ua.com.juja.microservices.teams.entity.impl.DeactivateTeamRequest;
@@ -49,24 +49,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author Andrii Sidun
  * @author Ivan Shapovalov
+ * @author Vladimir Zadorozhniy
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(TeamController.class)
 public class TeamControllerTest {
-    @Value("${teams.endpoint.activateTeam}")
-    private String teamsActivateTeamUrl;
-    @Value("${teams.endpoint.deactivateTeam}")
-    private String teamsDeactivateTeamUrl;
-    @Value("${teams.endpoint.getTeam}")
-    private String teamsGetTeamUrl;
-    @Value("${teams.endpoint.getAllTeams}")
-    private String teamsGetAllTeamsUrl;
+    private final String teamsActivateTeamUrl = "/v1/teams";
+    private final String teamsDeactivateTeamUrl = "/v1/teams";
+    private final String teamsGetTeamUrl = "/v1/teams/users";
+    private final String teamsGetAllTeamsUrl = "/v1/teams";
 
     @Inject
     private MockMvc mockMvc;
 
     @MockBean
     private TeamService teamService;
+
+    @MockBean
+    private KeepersClient keepersClient;
 
     @Test
     public void activateTeamIfSomeUsersInActiveTeams() throws Exception {
