@@ -106,7 +106,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void activateTeamIfUserNotKeeperThrowsException() {
+    public void activateTeamIfFromUserNotKeeperThrowsException() {
         String from = "uuid-from";
         ActivateTeamRequest activateTeamRequest = new ActivateTeamRequest(from,
                 new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
@@ -119,11 +119,24 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void activateTeamIfUserNotKeeperOfTeamsDirectionThrowsException() {
+    public void activateTeamIfFromUserNotKeeperOfTeamsDirectionThrowsException() {
         String from = "uuid-from";
         ActivateTeamRequest activateTeamRequest = new ActivateTeamRequest(from,
                 new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
         when(keeperService.getDirections(from)).thenReturn(Arrays.asList("teams2", "keepers"));
+
+        expectedException.expect(UserNotTeamsKeeperException.class);
+        expectedException.expectMessage("User '#uuid-from#' have not permissions for that command");
+
+        teamService.activateTeam(activateTeamRequest);
+    }
+
+    @Test
+    public void activateTeamIfFromUserNotKeeperOfAnyDirectionThrowsException() {
+        String from = "uuid-from";
+        ActivateTeamRequest activateTeamRequest = new ActivateTeamRequest(from,
+                new HashSet<>(Arrays.asList("uuid1", "uuid2", "uuid3", "uuid4")));
+        when(keeperService.getDirections(from)).thenReturn(new ArrayList<>());
 
         expectedException.expect(UserNotTeamsKeeperException.class);
         expectedException.expectMessage("User '#uuid-from#' have not permissions for that command");
@@ -179,7 +192,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void deactivateTeamIfUserNotKeeperThrowsException() {
+    public void deactivateTeamIfFromUserNotKeeperThrowsException() {
         final String from = "uuid-from";
         final String uuid = "uuid-in-one-team";
         DeactivateTeamRequest deactivateTeamRequest = new DeactivateTeamRequest(from, uuid);
@@ -191,7 +204,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void deactivateTeamIfUserNotTeamsKeeperThrowsException() {
+    public void deactivateTeamIfFromUserNotTeamsKeeperThrowsException() {
         final String from = "uuid-from";
         final String uuid = "uuid-in-one-team";
         DeactivateTeamRequest deactivateTeamRequest = new DeactivateTeamRequest(from, uuid);
@@ -222,7 +235,7 @@ public class TeamServiceTest {
     }
 
     @Test
-    public void deactivateTeamIfUserNotInTeamThrowsException() {
+    public void deactivateTeamIfFromUserIsTeamsKeeperAndUserNotInTeamThrowsException() {
         String from = "uuid-from";
         final String uuid = "uuid-not-in-team";
         DeactivateTeamRequest deactivateTeamRequest = new DeactivateTeamRequest(from, uuid);
@@ -234,6 +247,26 @@ public class TeamServiceTest {
         expectedException.expectMessage(String.format("User with uuid '%s' not in team now", uuid));
 
         teamService.deactivateTeam(deactivateTeamRequest);
+    }
+
+    @Test
+    public void deactivateTeamIfFromUserIsKeeperOfSeveralDirectionsAndUserInTeamExecutedCorrectly() {
+        String from = "uuid-from";
+        final String uuid = "uuid-in-team";
+        DeactivateTeamRequest deactivateTeamRequest = new DeactivateTeamRequest(from, uuid);
+        final Team team = new Team(from,new HashSet<>(Arrays.asList(uuid, "", "", "")));
+        List<Team> teams = new ArrayList<>();
+        teams.add(team);
+        when(keeperService.getDirections(from)).thenReturn(Arrays.asList(teamsDirection,"anyDirection"));
+        when(teamRepository.getUserActiveTeams(eq(uuid), any(Date.class))).thenReturn(teams);
+        when(teamRepository.saveTeam(team)).thenReturn(team);
+
+        teamService.deactivateTeam(deactivateTeamRequest);
+
+        verify(keeperService).getDirections(from);
+        verify(teamRepository).getUserActiveTeams(eq(uuid), any(Date.class));
+        verify(teamRepository).saveTeam(team);
+        verifyNoMoreInteractions(teamRepository, keeperService);
     }
 
     @Test
