@@ -87,7 +87,7 @@ public class TeamService {
         List<String> directions = keeperService.getDirections(from);
         if (directions == null || directions.isEmpty() ||
                 directions.stream()
-                        .filter(direction -> !direction.equalsIgnoreCase(teamsDirection)).count() > 0) {
+                        .filter(direction -> direction.equalsIgnoreCase(teamsDirection)).count()== 0) {
             log.warn("User '{}' tried to activate/deactivate team in request '{}'", from, teamRequest);
             throw new UserNotTeamsKeeperException(String.format("User '#%s#' have not permissions for that command", from));
         }
